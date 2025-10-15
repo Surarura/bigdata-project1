@@ -5,14 +5,14 @@ import java.io.*;
 
 //cel klasy - zgrupowanie czasu i licznika odsłon do 1 obiektu zamiast przesyłać jedno po drugim
 public class ViewStats implements Writable {
-    private LongWritable totalDuration;
+    private DoubleWritable totalDuration;
     private IntWritable viewCount;
 
-    public ViewStats(){set(new LongWritable(0), new IntWritable(0));}
+    public ViewStats(){set(new DoubleWritable(0), new IntWritable(0));}
 
-    public ViewStats(long duration, int count) {set(new LongWritable(duration), new IntWritable(count));}
+    public ViewStats(long duration, int count) {set(new DoubleWritable(duration), new IntWritable(count));}
 
-    public LongWritable getTotalDuration() {
+    public DoubleWritable getTotalDuration() {
         return totalDuration;
     }
 
@@ -20,15 +20,15 @@ public class ViewStats implements Writable {
         return viewCount;
     }
 
-    public void set(LongWritable duration, IntWritable count) {
+    public void set(DoubleWritable duration, IntWritable count) {
         this.totalDuration = duration;
         this.viewCount = count;
     }
 
     public void addViewStats(ViewStats viewStats) {
-        long newDuration = this.totalDuration.get() + viewStats.getTotalDuration().get();
+        double newDuration = this.totalDuration.get() + viewStats.getTotalDuration().get();
         int newCount = this.viewCount.get() + viewStats.getViewCount().get();
-        this.set(new LongWritable(newDuration), new IntWritable(newCount));
+        this.set(new DoubleWritable(newDuration), new IntWritable(newCount));
     }
 
     // Metoda mówiąca Hadoopowi, jak zapisać (serializować) dane tej klasy.

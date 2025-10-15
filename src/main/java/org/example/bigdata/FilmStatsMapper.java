@@ -1,5 +1,6 @@
 package org.example.bigdata;
 
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -14,6 +15,8 @@ public class FilmStatsMapper extends Mapper<LongWritable, Text, Text, ViewStats>
 
     // Tworzymy obiekty klucza i wartości raz, aby ich nie tworzyć w pętli dla każdej linii - to optymalizacja.
     private final Text outputKey = new Text();
+    //jako tekst żeby był 1 unique klucz, nie mam potrzeby operacji reduktora to nie potrzebuje funkcji zadnych ani traktować te pola jako osobne
+    //tak to bym musiał implementować Comparable zeby porównać 2 klucze tymi polami
     private final ViewStats outputValue = new ViewStats();
 
     public void map(LongWritable offset, Text lineText, Context context) {
@@ -23,7 +26,7 @@ public class FilmStatsMapper extends Mapper<LongWritable, Text, Text, ViewStats>
 
                 String filmId = "";
                 String platform = "";
-                long durationSeconds = 0;
+                double durationSeconds = 0;
 
                 int i = 0;
                 for (String word : line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)")) {
@@ -43,7 +46,7 @@ public class FilmStatsMapper extends Mapper<LongWritable, Text, Text, ViewStats>
                 //klucz jako text, mozna jako klasa osobna jak nizej ale musi byc writablecomparable
                 //comparable bo musi po kluczach móc sortowac
                 //imo jako klasa byłoby lepiej kiedy bym musiał jakies operacje na kluczu, jak nizej musze dodawac nie, a tak to w.e imo?
-                outputValue.set(new LongWritable(durationSeconds), new IntWritable(1));
+                outputValue.set(new DoubleWritable(durationSeconds), new IntWritable(1));
 
                 // Zapisujemy parę klucz-wartość do kontekstu.
                 context.write(outputKey, outputValue);
