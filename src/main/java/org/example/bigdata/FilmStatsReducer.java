@@ -27,7 +27,8 @@ public class FilmStatsReducer extends Reducer<Text, ViewStats, Text, Text> {
         String filmId = keyParts[0];
         String platform = keyParts[1];
 
-        String resultString = String.format("%s;%s;%d;%.2f", filmId, platform, total_views, avg_watch_time);
+        String resultString = String.format(java.util.Locale.US, "%s,%s,%d,%.2f", filmId, platform, total_views, avg_watch_time);
+        //UTIL LOCALE US ŻEBY NIE BYŁO 72,8 TYLKO 72.8 -> PRZECINEK PSUŁ POTEM W HIVE COS
         resultValue.set(resultString);
         context.write(key, resultValue);
     }
